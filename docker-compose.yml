@@ -1,0 +1,35 @@
+version: '3'
+services:
+  influxdb:
+    image: "influxdb:1.8"
+    ports:
+        - 8086:8086
+    environment:
+      - INFLUXDB_REPORTING_DISABLED=true
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+    networks:
+      tik_net:
+  # telegraf:
+  #   image: "telegraf:latest"
+  #   networks:
+  #     tik_net:
+  #   volumes:
+  #     - ./etc/telegraf:/etc/telegraf
+  kapacitor:
+    image: "kapacitor:latest"
+    networks:
+      tik_net:
+    volumes:
+      - ./etc/kapacitor:/etc/kapacitor
+      - ./var/log/kapacitor:/var/log/kapacitor
+      - ./home/kapacitor:/home/kapacitor
+  chronograf:
+    image: "chronograf:1.9.4"
+    ports:
+      - 8888:8888
+    networks:
+      tik_net:
+
+networks:
+  tik_net:
+    driver: bridge
